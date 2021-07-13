@@ -2,7 +2,7 @@
 
 Curso de imersão de React explorando NextJS, SytledCompontes e mais.
 
-![página-inicial](https://github.com/acmesquita/alurakut/blob/main/docs/images/pagina_inicial.png)
+![página-inicial](https://github.com/acmesquita/alurakut/blob/main/docs/images/aula02.png)
 
 ## Contribuição
 
