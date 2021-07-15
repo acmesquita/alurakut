@@ -2,7 +2,7 @@ import { MainGrid } from '../components/MainGrid'
 import { Box } from '../components/Box'
 import { ProfileRelationsBoxWrapper } from '../components/ProfileRelations'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../lib/AlurakutCommons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function ProfileSidebar({ githubUser }) {
   return (
@@ -20,13 +20,36 @@ function ProfileSidebar({ githubUser }) {
   )
 }
 
+function ProfileRelationBox({ data, title }) {
+  return (
+     <ProfileRelationsBoxWrapper>
+          <h2 className="smallTitle">
+            {title} ({data.length})
+          </h2>
+          <ul>
+            {data.splice(0, 6).map(item => (
+              <li key={item.id}>
+                <a href={`/users/${follow.login}`}>
+                  <img src={follow.avatar_url} alt={follow.login}/>
+                  <span>{follow.login}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </ProfileRelationsBoxWrapper>
+  )
+}
+
 export default function Home() {
+  const githubUser = 'acmesquita'
+
+  const [follows, setFollows] = useState([])
   const [comunidades, setComunidades] = useState([{
     id: new Date().toISOString(),
     title: 'Eu odeio acordar cedo',
     image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
   }])
-  const githubUser = 'acmesquita'
+
   const friends = [
     'tiagogodinho',
     'vitorkusiaki',
@@ -35,6 +58,18 @@ export default function Home() {
     'squarizi',
     'AllanSiqueira'
   ]
+
+  useEffect(() => {
+    fetch(`https://api.github.com/users/${githubUser}/followers`).then(response => {
+      if(response.ok) return response.json()
+
+      throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`)
+    })
+    .then(data => {
+      setFollows(data)
+    })
+    .catch(error => console.error(error))
+  }, [])
 
   function handleSubmitForm(event) {
     event.preventDefault()
@@ -92,10 +127,25 @@ export default function Home() {
       <div className="profileRelationArea" style={{ gridArea: 'profileRelationArea'}}>
         <ProfileRelationsBoxWrapper>
           <h2 className="smallTitle">
+            Seguidores ({follows.length})
+          </h2>
+          <ul>
+            {follows.splice(0, 6).map(follow => (
+              <li key={follow.id}>
+                <a href={`/users/${follow.login}`}>
+                  <img src={follow.avatar_url} alt={follow.login}/>
+                  <span>{follow.login}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </ProfileRelationsBoxWrapper>
+        <ProfileRelationsBoxWrapper>
+          <h2 className="smallTitle">
             Comunidades ({comunidades.length})
           </h2>
           <ul>
-            {comunidades.map(comunidade => (
+            {comunidades.splice(0, 6).map(comunidade => (
               <li key={comunidade.id}>
                 <a href={`/comunidade/${comunidade.title}`}>
                   <img src={comunidade.image} alt={comunidade.title}/>
@@ -110,7 +160,7 @@ export default function Home() {
             Amigos ({friends.length})
           </h2>
           <ul>
-            {friends.map(friend => (
+            {friends.splice(0, 6).map(friend => (
               <li key={friend}>
                 <a href={`/users/${friend}`}>
                   <img src={`https://github.com/${friend}.png`} alt={friend}/>
