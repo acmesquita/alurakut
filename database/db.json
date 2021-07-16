@@ -1,0 +1,29 @@
+{
+  "communities": [
+    {
+      "id": "2021-07-16T16:57:55.494Z",
+      "title": "Teste",
+      "image": "http://placehold.it/300x300"
+    },
+    {
+      "id": "2021-07-16T17:04:56.250Z",
+      "title": "Teste 2",
+      "image": "http://placehold.it/300x300"
+    },
+    {
+      "id": "2021-07-16T17:05:32.519Z",
+      "title": "Teste 3",
+      "image": "http://placehold.it/300x300"
+    },
+    {
+      "id": "2021-07-16T17:05:59.345Z",
+      "title": "Teste 4",
+      "image": "http://placehold.it/300x300"
+    },
+    {
+      "id": "2021-07-16T17:06:23.673Z",
+      "title": "Teste 5",
+      "image": "http://placehold.it/300x300"
+    }
+  ]
+}

@@ -40,15 +40,19 @@ function ProfileRelationBox({ data, title }) {
   )
 }
 
+/**
+ * {
+    id: new Date().toISOString(),
+    title: 'Eu odeio acordar cedo',
+    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
+  }
+ */
+
 export default function Home() {
   const githubUser = 'acmesquita'
 
   const [follows, setFollows] = useState([])
-  const [comunidades, setComunidades] = useState([{
-    id: new Date().toISOString(),
-    title: 'Eu odeio acordar cedo',
-    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
-  }])
+  const [comunidades, setComunidades] = useState([])
 
   const friends = [
     'tiagogodinho',
@@ -59,7 +63,7 @@ export default function Home() {
     'AllanSiqueira'
   ]
 
-  useEffect(() => {
+  function findFollows() {
     fetch(`https://api.github.com/users/${githubUser}/followers`).then(response => {
       if(response.ok) return response.json()
 
@@ -69,6 +73,23 @@ export default function Home() {
       setFollows(data)
     })
     .catch(error => console.error(error))
+  }
+
+  function findComunidades() {
+    fetch(`/api/comunidades`).then(response => {
+      if(response.ok) return response.json()
+
+      throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`)
+    })
+    .then(data => {
+      setComunidades(data)
+    })
+    .catch(error => console.error(error))
+  }
+
+  useEffect(() => {
+    findFollows()
+    findComunidades()
   }, [])
 
   function handleSubmitForm(event) {
@@ -81,7 +102,19 @@ export default function Home() {
       image: dataForm.get('image')
     }
 
-    setComunidades([...comunidades, comunidade])
+    fetch('/api/comunidades', {
+      method: 'POST',
+      body: JSON.stringify(comunidade)
+    }).then(response => {
+      if(response.ok) {
+        return response.json()
+      }
+
+      throw new Error('Erro ao adicionar a comunidade')
+    })
+    .then(data => setComunidades([...comunidades, data]))
+    .catch(error => console.error(error))
+
   }
 
   return (
@@ -130,7 +163,7 @@ export default function Home() {
             Seguidores ({follows.length})
           </h2>
           <ul>
-            {follows.splice(0, 6).map(follow => (
+            {follows.filter((item, index) => index < 6 && item).map(follow => (
               <li key={follow.id}>
                 <a href={`/users/${follow.login}`}>
                   <img src={follow.avatar_url} alt={follow.login}/>
@@ -145,7 +178,7 @@ export default function Home() {
             Comunidades ({comunidades.length})
           </h2>
           <ul>
-            {comunidades.splice(0, 6).map(comunidade => (
+            {comunidades.filter((item, index) => index < 6 && item).map(comunidade => (
               <li key={comunidade.id}>
                 <a href={`/comunidade/${comunidade.title}`}>
                   <img src={comunidade.image} alt={comunidade.title}/>
@@ -160,7 +193,7 @@ export default function Home() {
             Amigos ({friends.length})
           </h2>
           <ul>
-            {friends.splice(0, 6).map(friend => (
+            {friends.filter((item, index) => index < 6 && item).map(friend => (
               <li key={friend}>
                 <a href={`/users/${friend}`}>
                   <img src={`https://github.com/${friend}.png`} alt={friend}/>
