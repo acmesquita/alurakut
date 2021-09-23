@@ -12,3 +12,5 @@ Para contribuir com o projeto, siga os seguintes passos:
 2. Instale as dependências: `yarn install`
 3. Suba o projeto: `yarn dev`
 4. E contribua!!
+
+Até mais
